@@ -100,6 +100,10 @@ static gboolean lua_tap_packet(void *tapdata, packet_info *pinfo, epan_dissect_t
         lua_pushnil(tap->L);
     }
 
+    packet_info* old_lua_pinfo = pinfo;
+    struct _wslua_treeitem* old_lua_tree = lua_tree;
+    tvbuff_t* old_lua_tvb = lua_tvb;
+
     lua_pinfo = pinfo;
     lua_tvb = edt->tvb;
     lua_tree = create_TreeItem(edt->tree, NULL);
@@ -121,9 +125,9 @@ static gboolean lua_tap_packet(void *tapdata, packet_info *pinfo, epan_dissect_t
     clear_outstanding_Pinfo();
     clear_outstanding_Tvb();
 
-    lua_pinfo = NULL;
-    lua_tvb = NULL;
-    lua_tree = NULL;
+    lua_pinfo = old_lua_pinfo;
+    lua_tree = old_lua_tree;
+    lua_tvb = old_lua_tvb;
 
     return retval;
 }
